@@ -13,7 +13,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request) {
+async function handleSave(request) {
   try {
     const body = await request.json();
     if (!body || typeof body !== 'object') {
@@ -33,9 +33,29 @@ export async function PUT(request) {
       );
     }
   } catch (error) {
+    console.error('Save error:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal Server Error' },
+      { success: false, error: 'Internal Server Error: ' + (error?.message || '') },
       { status: 500 }
     );
   }
+}
+
+export async function PUT(request) {
+  return handleSave(request);
+}
+
+export async function POST(request) {
+  return handleSave(request);
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }

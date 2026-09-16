@@ -103,11 +103,19 @@ export default function AdminPage() {
     setSaveError(null);
 
     try {
-      const res = await fetch('/api/portfolio', {
-        method: 'PUT',
+      let res = await fetch('/api/portfolio', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+
+      if (!res.ok) {
+        res = await fetch('/api/portfolio', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+      }
 
       const data = await res.json();
       if (data.success) {
@@ -117,6 +125,7 @@ export default function AdminPage() {
         setSaveError(data.error || 'Failed to save changes');
       }
     } catch (err) {
+      console.error('Save error:', err);
       setSaveError('Network error while publishing changes');
     } finally {
       setSaving(false);
