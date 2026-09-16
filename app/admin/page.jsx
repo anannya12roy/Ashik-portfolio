@@ -41,6 +41,16 @@ export default function AdminPage() {
   const [saveError, setSaveError] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Check persistent auth state from localStorage on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedAuth = localStorage.getItem('ashik_admin_auth');
+      if (savedAuth === 'true') {
+        setIsAuthenticated(true);
+      }
+    }
+  }, []);
+
   // Fetch portfolio data on load
   useEffect(() => {
     fetch('/api/portfolio')
@@ -86,6 +96,9 @@ export default function AdminPage() {
 
       const data = await res.json();
       if (data.success) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('ashik_admin_auth', 'true');
+        }
         setIsAuthenticated(true);
       } else {
         setLoginError(data.error || 'Invalid credentials');
@@ -95,6 +108,13 @@ export default function AdminPage() {
     } finally {
       setLoggingIn(false);
     }
+  };
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('ashik_admin_auth');
+    }
+    setIsAuthenticated(false);
   };
 
   const handleSaveAll = async () => {
@@ -384,7 +404,7 @@ export default function AdminPage() {
             View Live Site
           </Link>
           <button
-            onClick={() => setIsAuthenticated(false)}
+            onClick={handleLogout}
             className="px-4 py-2 rounded-full border border-rose-500/30 text-rose-300 text-xs font-semibold hover:bg-rose-500/10 transition-all flex items-center gap-1.5"
           >
             <LogOut className="w-3.5 h-3.5" />
