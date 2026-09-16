@@ -412,7 +412,7 @@ export default function AdminPage() {
             }`}
           >
             <User className="w-4 h-4" />
-            <span>Profile & Hero</span>
+            <span>Profile & Links</span>
           </button>
 
           <button
@@ -505,7 +505,7 @@ export default function AdminPage() {
           {/* TAB 1: PROFILE & HERO */}
           {activeTab === 'profile' && (
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white border-b border-white/10 pb-3">Profile & Hero Details</h2>
+              <h2 className="text-xl font-bold text-white border-b border-white/10 pb-3">Profile & Contact Links</h2>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -514,7 +514,7 @@ export default function AdminPage() {
                     type="text"
                     value={formData.profile?.name || ''}
                     onChange={(e) => updateProfile('name', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-[#0a0c10] border border-[#d4af37]/20 text-white text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-[#0a0c10] border border-[#d4af37]/20 text-[#d4af37] font-bold text-sm"
                   />
                 </div>
 
@@ -525,6 +525,31 @@ export default function AdminPage() {
                     value={formData.profile?.title || ''}
                     onChange={(e) => updateProfile('title', e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-[#0a0c10] border border-[#d4af37]/20 text-white text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Email & LinkedIn URLs */}
+              <div className="grid md:grid-cols-2 gap-6 p-4 rounded-2xl bg-[#0a0c10] border border-[#d4af37]/30">
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-[#d4af37] font-semibold mb-2">Email Address (Email me button)</label>
+                  <input
+                    type="email"
+                    value={formData.profile?.email || ''}
+                    onChange={(e) => updateProfile('email', e.target.value)}
+                    placeholder="ashikur.rahman@example.com"
+                    className="w-full px-4 py-3 rounded-xl bg-[#121620] border border-white/10 text-white text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-[#d4af37] font-semibold mb-2">LinkedIn Profile URL (Connect on LinkedIn button)</label>
+                  <input
+                    type="text"
+                    value={formData.profile?.linkedin || ''}
+                    onChange={(e) => updateProfile('linkedin', e.target.value)}
+                    placeholder="https://www.linkedin.com/in/ashikur-rahman"
+                    className="w-full px-4 py-3 rounded-xl bg-[#121620] border border-white/10 text-white text-sm"
                   />
                 </div>
               </div>
