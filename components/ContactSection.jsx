@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Linkedin, MapPin, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Linkedin, MapPin, Send, CheckCircle2, AlertCircle, Loader2, Copy, Check } from 'lucide-react';
 
 export default function ContactSection({ contact = {}, profile = {} }) {
   const {
@@ -21,6 +21,13 @@ export default function ContactSection({ contact = {}, profile = {} }) {
   });
 
   const [status, setStatus] = useState({ loading: false, success: false, error: null });
+  const [copiedField, setCopiedField] = useState(null);
+
+  const handleCopy = (text, fieldName) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(fieldName);
+    setTimeout(() => setCopiedField(null), 2500);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,11 +56,15 @@ export default function ContactSection({ contact = {}, profile = {} }) {
     }
   };
 
+  const userEmail = profile?.email || 'ashikur.rahman@example.com';
+  const userLinkedin = profile?.linkedin || 'https://www.linkedin.com/in/ashikur';
+
   return (
     <section id="contact" className="py-24 bg-[#121620]/60 border-t border-[#d4af37]/20 relative">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#d4af37] mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#d4af37] mb-4 flex items-center justify-center gap-2">
+            <span className="w-6 h-px bg-[#d4af37]" />
             {tagline}
           </p>
 
@@ -68,25 +79,50 @@ export default function ContactSection({ contact = {}, profile = {} }) {
             {subtitle}
           </p>
 
+          {/* Interactive Direct Contact Cards & Buttons */}
           <div className="flex flex-wrap justify-center gap-4 mt-8">
-            <a
-              href={`mailto:${profile.email || 'ashikur.rahman@example.com'}`}
-              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#eab308] via-[#d4af37] to-[#ca8a04] text-[#0a0c10] font-bold hover:opacity-95 shadow-gold transition-all flex items-center gap-2"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Email me</span>
-            </a>
+            <div className="flex items-center gap-2 p-1.5 rounded-full bg-[#121620] border border-[#d4af37]/30">
+              <a
+                href={`mailto:${userEmail}`}
+                className="px-6 py-2.5 rounded-full btn-shimmer text-[#0a0c10] font-bold text-xs uppercase tracking-wider hover:opacity-95 shadow-gold transition-all flex items-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Email Me</span>
+              </a>
+              <button
+                onClick={() => handleCopy(userEmail, 'email')}
+                className="p-2.5 rounded-full text-slate-400 hover:text-[#d4af37] hover:bg-[#181d2a] transition-all"
+                title="Copy Email Address"
+              >
+                {copiedField === 'email' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
 
-            <a
-              href={profile.linkedin || 'https://www.linkedin.com'}
-              target="_blank"
-              rel="noreferrer"
-              className="px-8 py-3.5 rounded-full border border-[#d4af37]/40 text-slate-200 hover:bg-[#181d2a] hover:border-[#d4af37] transition-all font-semibold flex items-center gap-2"
-            >
-              <Linkedin className="w-4 h-4 text-[#0077b5]" />
-              <span>Connect on LinkedIn</span>
-            </a>
+            <div className="flex items-center gap-2 p-1.5 rounded-full bg-[#121620] border border-[#d4af37]/30">
+              <a
+                href={userLinkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-2.5 rounded-full border border-[#d4af37]/40 text-slate-200 hover:bg-[#181d2a] hover:border-[#d4af37] transition-all text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+              >
+                <Linkedin className="w-4 h-4 text-[#0077b5]" />
+                <span>Connect on LinkedIn</span>
+              </a>
+              <button
+                onClick={() => handleCopy(userLinkedin, 'linkedin')}
+                className="p-2.5 rounded-full text-slate-400 hover:text-[#d4af37] hover:bg-[#181d2a] transition-all"
+                title="Copy LinkedIn URL"
+              >
+                {copiedField === 'linkedin' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
+
+          {copiedField && (
+            <p className="mt-3 text-xs text-emerald-400 font-semibold animate-in fade-in">
+              ✓ {copiedField === 'email' ? 'Email Address' : 'LinkedIn URL'} copied to clipboard!
+            </p>
+          )}
         </div>
 
         {/* Interactive Contact Form */}
@@ -175,7 +211,7 @@ export default function ContactSection({ contact = {}, profile = {} }) {
             <button
               type="submit"
               disabled={status.loading}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#eab308] via-[#d4af37] to-[#ca8a04] text-[#0a0c10] font-bold text-base hover:opacity-95 shadow-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-xl btn-shimmer text-[#0a0c10] font-bold text-base hover:opacity-95 shadow-gold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {status.loading ? (
                 <>
