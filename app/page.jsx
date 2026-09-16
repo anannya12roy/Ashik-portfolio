@@ -1,6 +1,3 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
@@ -10,29 +7,13 @@ import ExperienceSection from '@/components/ExperienceSection';
 import ToolkitSection from '@/components/ToolkitSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import ContactSection from '@/components/ContactSection';
-import { initialPortfolioData } from '@/lib/portfolioData';
+import { getPortfolioData } from '@/lib/dataStore';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function Home() {
-  const [data, setData] = useState(initialPortfolioData);
-  const [loading, setLoading] = useState(true);
-
-  const fetchPortfolioData = async () => {
-    try {
-      const res = await fetch('/api/portfolio');
-      const result = await res.json();
-      if (result.success && result.data) {
-        setData(result.data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch dynamic portfolio data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPortfolioData();
-  }, []);
+  const data = getPortfolioData();
 
   return (
     <div className="min-h-screen bg-[#0a0c10] text-[#f0f2f5] relative">
