@@ -17,25 +17,29 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create public/uploads directory if not exists
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    // Convert file to Base64 Data URL for serverless compatibility (Netlify/Vercel)
+    const mimeType = file.type || 'image/jpeg';
+    const base64Data = buffer.toString('base64');
+    const dataUrl = `data:${mimeType};base64,${base64Data}`;
+
+    // Optionally try saving to public/uploads on writable local dev environments
+    try {
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      const ext = path.extname(file.name) || '.jpg';
+      const filename = `profile-${Date.now()}${ext}`;
+      const filePath = path.join(uploadsDir, filename);
+      fs.writeFileSync(filePath, buffer);
+    } catch (diskErr) {
+      // Ignore read-only file system errors on Netlify/Vercel
+      console.log('Serverless environment: Using Base64 Data URL for image upload.');
     }
-
-    // Generate unique filename
-    const ext = path.extname(file.name) || '.jpg';
-    const filename = `profile-${Date.now()}${ext}`;
-    const filePath = path.join(uploadsDir, filename);
-
-    // Write file to public/uploads/
-    fs.writeFileSync(filePath, buffer);
-
-    const publicUrl = `/uploads/${filename}`;
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
+      url: dataUrl,
       message: 'Image uploaded successfully!',
     });
   } catch (error) {
