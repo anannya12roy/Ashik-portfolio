@@ -61,3 +61,18 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #d4af37;
 }
+
+/* Hide Netlify floating badge / drawer elements */
+#netlify-badge,
+[data-netlify-badge],
+.netlify-badge,
+iframe[src*="netlify"],
+#netlify-drawer,
+.netlify-drawer,
+[id*="netlify-identity"],
+[class*="netlify-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
